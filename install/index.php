@@ -169,29 +169,19 @@ class nzrp_carcatalogue extends CModule
 		return $tables;
 	}
 	private function createData() {
+		$data=include __DIR__."/data.inc";
 		// создаём опции, они ещё понадобятся
-		$optionNames=[
-			"Магнитола",
-			"Сигнализация",
-			"Подогрев сидений",
-			"17-дюймовые диски",
-			"Зимняя резина",
-			"Коврики"
-		];
-		
 		$options=[];
-		foreach($optionNames as $name) {
+		foreach($data['options'] as $name) {
 			$opt=OptionTable::createObject();
 			$opt->setName($name);
 			$options[]=$opt;
-			
 		}
 		
 		// каждый раз набор одинаково формируется
 		srand(1);
-		$data=include __DIR__."/data.inc";
 		
-		foreach( $data as $brandName => $modelList) {
+		foreach( $data['brands'] as $brandName => $modelList) {
 			$brand=BrandTable::createObject();
 			$brand->setName($brandName);
 			$brand->save();
@@ -219,7 +209,8 @@ class nzrp_carcatalogue extends CModule
 						$car=CarTable::createObject();
 						$car->setYear($r[0]);
 						$car->setPrice($r[1]);
-						$car->setName($complect->getName()." ".$car->getYear());
+						$car->setName($model->getName()." ".$car->getYear()." ".mb_substr($complect->getName(),0,1));
+						$car->setComplect($complect);
 						$car->save();
 						
 						foreach($options as $opt) {

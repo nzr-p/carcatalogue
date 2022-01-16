@@ -35,12 +35,11 @@ class ComplectTable extends DataManager {
 			))->configureJoinType('inner'),
 			
 			// complect 1:N car
-			(new OneToMany('CARS', CarTable::class, 'COMPLECT'))
-				->configureJoinType('inner'),
-		
+			(new OneToMany('CARS', CarTable::class, 'COMPLECT')),
+			
 			// complect N:M option
 			(new ManyToMany('OPTIONS', OptionTable::class))
-		
+				->configureTableName("b_nzrp_carcatalogue_options_complects"),
 		];
 	}
 }

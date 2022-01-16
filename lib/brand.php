@@ -27,7 +27,6 @@ class BrandTable extends DataManager {
 			
 			// brand 1:N model
 			(new OneToMany('MODELS', ModelTable::class, 'BRAND'))
-				->configureJoinType('inner')
 		];
 	}
 }

@@ -36,7 +36,6 @@ class ModelTable extends DataManager {
 			
 			// model 1:N complect
 			(new OneToMany('COMPLECTS', ComplectTable::class, 'MODEL'))
-				->configureJoinType('inner')
 		];
 	}
 }

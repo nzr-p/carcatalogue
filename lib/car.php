@@ -32,12 +32,12 @@ class CarTable extends DataManager {
 			// car 1:N complect
 			new IntegerField('COMPLECT_ID'),
 			(new Reference('COMPLECT',ComplectTable::class,
-				Join::on('this.CAR_ID', 'ref.ID')
+				Join::on('this.COMPLECT_ID', 'ref.ID')
 			))->configureJoinType('inner'),
 			
 			// car N:M option
 			(new ManyToMany('OPTIONS', OptionTable::class))
-		
+				->configureTableName("b_nzrp_carcatalogue_options_cars"),
 		];
 	}
 }
