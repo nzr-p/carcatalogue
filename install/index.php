@@ -4,8 +4,10 @@ use Bitrix\Main\Application;
 use Bitrix\Main\Context;
 use Bitrix\Main\ModuleManager;
 use Nzrp\CarCatalogue\BrandTable;
+use Nzrp\CarCatalogue\CarTable;
 use Nzrp\CarCatalogue\ComplectTable;
 use Nzrp\CarCatalogue\ModelTable;
+use Nzrp\CarCatalogue\OptionTable;
 
 class nzrp_carcatalogue extends CModule
 {
@@ -49,12 +51,11 @@ class nzrp_carcatalogue extends CModule
 				if($request->get("droptables")) {
 					$this->UnInstallDB();
 				}
-				//	$this->InstallDB();
-			} catch(Error $ex) {
-				ModuleManager::unRegisterModule($this->MODULE_ID);
-				$APPLICATION->ThrowException("Во время установки произошла ошибка");
+				$this->InstallDB();
+			} catch(Exception $ex) {
+				// не уверен, что надо снимать регистрацию модуля в случае ошибки
+				$APPLICATION->ThrowException("Во время установки произошла ошибка: ".$ex->getMessage());
 			}
-			$APPLICATION->ThrowException("Во время установки произошла ошибка");
 
 			
 			
@@ -76,10 +77,9 @@ class nzrp_carcatalogue extends CModule
 		
 		$step=intval($step);
 		if ($step<2) {
-			$APPLICATION->IncludeAdminFile("Удаление модуля \"$this->MODULE_NAME\"", __DIR__."/step1.php");
+			$APPLICATION->IncludeAdminFile("Удаление модуля \"$this->MODULE_NAME\"", __DIR__."/unstep1.php");
 		}
 		elseif($step==2) {
-			ModuleManager::registerModule($this->MODULE_ID);
 			try {
 				CModule::IncludeModule($this->MODULE_ID);
 				
@@ -87,11 +87,11 @@ class nzrp_carcatalogue extends CModule
 				if($request->get("droptables")) {
 					$this->UnInstallDB();
 				}
-			} catch(Error $ex) {
-				$APPLICATION->ThrowException("Во время удаления произошла ошибка");
+			} catch(Exception $ex) {
+				$APPLICATION->ThrowException("Во время удаления произошла ошибка: ".$ex->getMessage());
 			}
 			ModuleManager::unRegisterModule($this->MODULE_ID);
-			$APPLICATION->IncludeAdminFile("Удаление модуля \"$this->MODULE_NAME\"", __DIR__."/step2.php");
+			$APPLICATION->IncludeAdminFile("Удаление модуля \"$this->MODULE_NAME\"", __DIR__."/unstep2.php");
 		}
 
 
@@ -125,28 +125,126 @@ class nzrp_carcatalogue extends CModule
 			return;
 		}
 
-//
-//		$newBook = new EO_Brand();
-//		$newBook->setName('Brand1');
-//		$newBook->save();
+		$this->createData();
 	}
 	public function UnInstallDB() {
 		$con = Application::getConnection();
 		
-		foreach($this->getTables() as $table) {
+		foreach($this->getTables(true) as $table) {
 			if ($con->isTableExists($table->getDBTableName())) {
 				$con->dropTable($table->getDBTableName());
 			}
 		}
 	}
 	/**
+	 * @param bool $withExtra ещё 2 таблицы это связи M:N, их создавать не надо, но удалить вроде надо
+	 *
 	 * @return \Bitrix\Main\ORM\Entity[]
 	 */
-	private function getTables():array {
-		return [
+	private function getTables(bool $withExtra=false):array {
+		$oe=OptionTable::getEntity();
+
+		$tables=[
 			BrandTable::getEntity(),
 			ModelTable::getEntity(),
 			ComplectTable::getEntity(),
+			CarTable::getEntity(),
+			$oe,
+			$oe->getField("CARS")->getMediatorEntity(),
+			$oe->getField("COMPLECTS")->getMediatorEntity()
 		];
+//		if ($withExtra) {
+			
+			//
+//			try {
+				// их может не быть
+//				$tables[]=;
+//				$tables[]=;
+//			}
+//			catch(Exception $ex) {
+//
+//			}
+//		}
+		
+		return $tables;
+	}
+	private function createData() {
+		// создаём опции, они ещё понадобятся
+		$optionNames=[
+			"Магнитола",
+			"Сигнализация",
+			"Подогрев сидений",
+			"17-дюймовые диски",
+			"Зимняя резина",
+			"Коврики"
+		];
+		
+		$options=[];
+		foreach($optionNames as $name) {
+			$opt=OptionTable::createObject();
+			$opt->setName($name);
+			$options[]=$opt;
+			
+		}
+		
+		// каждый раз набор одинаково формируется
+		srand(1);
+		$data=include __DIR__."/data.inc";
+		
+		foreach( $data as $brandName => $modelList) {
+			$brand=BrandTable::createObject();
+			$brand->setName($brandName);
+			$brand->save();
+			foreach($modelList as $modelName => $complectList) {
+				$model=ModelTable::createObject();
+				$model->setName($modelName);
+				$model->setBrand($brand);
+				$model->save();
+				
+				foreach($complectList as $complectName => $carList) {
+					$complect=ComplectTable::createObject();
+					$complect->setName($complectName);
+					$complect->setModel($model);
+					$complect->save();
+					
+					// связываем случайным образом, а то вручную на таком количестве не делают
+					// вполне годная модель получается
+					foreach($options as $opt) {
+						if (rand(0,1000)<500) {
+							$opt->addToComplects($complect);
+						}
+					}
+					
+					foreach($carList as $r) {
+						$car=CarTable::createObject();
+						$car->setYear($r[0]);
+						$car->setPrice($r[1]);
+						$car->setName($complect->getName()." ".$car->getYear());
+						$car->save();
+						
+						foreach($options as $opt) {
+							if (rand(0,1000)<500) {
+								$opt->addToCars($car);
+							}
+						}
+						
+					}
+				}
+			}
+		}
+		
+		foreach($options as $opt) {
+			$opt->save();
+		}
+		
+		
+		
+		
+		//		\Nzrp\CarCatalogue\OptionTable::getMap()
+//
+//		$newBook = BrandTable::createObject();
+//		$newBook->setName('Brand1');
+//		$newBook->save();
+	
 	}
 }

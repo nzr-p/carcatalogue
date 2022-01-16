@@ -2,6 +2,7 @@
 
 namespace Nzrp\CarCatalogue;
 use Bitrix\Main\Entity;
+use Bitrix\Main\ORM\Fields\Relations\OneToMany;
 use Bitrix\Main\ORM\Fields\Relations\Reference;
 use Bitrix\Main\ORM\Query\Join;
 use Bitrix\Main\ORM\Data\DataManager;
@@ -27,11 +28,15 @@ class ModelTable extends DataManager {
 			),
 			new StringField('NAME'),
 
-			// модели соответсвует только 1 брэнд
+			// model N:1 brand
 			new IntegerField('BRAND_ID'),
 			(new Reference('BRAND',BrandTable::class,
-				Join::on('this.BRAND_ID', 'ref.ID')
-			))->configureJoinType('inner')
+				Join::on('this.BRAND_ID', 'ref.ID')))
+				->configureJoinType('inner'),
+			
+			// model 1:N complect
+			(new OneToMany('COMPLECTS', ComplectTable::class, 'MODEL'))
+				->configureJoinType('inner')
 		];
 	}
 }
