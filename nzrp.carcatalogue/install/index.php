@@ -3,6 +3,7 @@
 use Bitrix\Main\Application;
 use Bitrix\Main\Context;
 use Bitrix\Main\ModuleManager;
+use Bitrix\Main\UrlRewriter;
 use Nzrp\CarCatalogue\BrandTable;
 use Nzrp\CarCatalogue\CarTable;
 use Nzrp\CarCatalogue\ComplectTable;
@@ -44,6 +45,7 @@ class nzrp_carcatalogue extends CModule
 	
 	public function doInstall()
 	{
+		
 		global $APPLICATION,$step;
 		
 		$step=intval($step);
@@ -146,6 +148,7 @@ class nzrp_carcatalogue extends CModule
 			throw new Exception("Компоненты не скопировались");
 		}
 		
+		// можно и компонент весь перекинуть, но разве так не лучше?
 		if (!CopyDirFiles(
 			__DIR__."/components/nzrp/carcatalogue.api/api",
 			$_SERVER["DOCUMENT_ROOT"]."/api",
@@ -154,6 +157,13 @@ class nzrp_carcatalogue extends CModule
 		)) {
 			throw new Exception("Не удалось создать /api");
 		}
+		UrlRewriter::add(SITE_ID,[
+			'CONDITION' => '#^/api/#',
+			'RULE' => '',
+			'ID' => 'nzrp:carcatalogue.api',
+			'PATH' => '/api/index.php',
+			'SORT' => 100,
+		]);
 	}
 	
 	
