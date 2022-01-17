@@ -13,7 +13,7 @@ class NzrpCarCatalogueDetails extends CBitrixComponent
 		if (empty($this->arParams['CAR_ID'])) {
 			$this->errors[]="Пустой параметр CAR_ID";
 			return false;
-		};
+		}
 		
 		return true;
 	}
@@ -31,16 +31,11 @@ class NzrpCarCatalogueDetails extends CBitrixComponent
 			$this->showErrors();
 			return;
 		}
-
-//		$moduleAccess = $APPLICATION->GetGroupRight('b24connector');
-//
-//		if($moduleAccess < "R")
-//		{
-//			ShowError(Loc::getMessage('CRM_PERMISSION_DENIED'));
-//			return;
-//		}
-
-//		$this->arResult['PERM_CAN_EDIT'] = ($moduleAccess > "R");
+		
+		if (CMain::GetGroupRight("nzrp.carcatalogue")<"W") {
+			ShowError("Нет доступа");
+			return;
+		}
 
 		$this->includeComponentTemplate();
 	}

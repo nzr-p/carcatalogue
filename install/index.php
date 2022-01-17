@@ -31,6 +31,7 @@ class nzrp_carcatalogue extends CModule
 		
 	}
 	
+	/** @noinspection PhpUnused Всё тут используется*/
 	function GetModuleRightList():array
 	{
 		return [
@@ -52,7 +53,6 @@ class nzrp_carcatalogue extends CModule
 		elseif($step==2) {
 			ModuleManager::registerModule($this->MODULE_ID);
 			try {
-				// не знаю, можно ли так, но работает
 				// это нужно чтобы получить список таблиц
 				CModule::IncludeModule($this->MODULE_ID);
 				
@@ -62,6 +62,10 @@ class nzrp_carcatalogue extends CModule
 				}
 				$this->InstallDB();
 				$this->InstallFiles();
+				
+				// права по умолчанию - полный доступ
+				COption::SetOptionString($this->MODULE_ID, "GROUP_DEFAULT_RIGHT","W");
+				
 			} catch(Exception $ex) {
 				// не уверен, что надо снимать регистрацию модуля в случае ошибки
 				$APPLICATION->ThrowException("Во время установки произошла ошибка: ".$ex->getMessage());
@@ -87,6 +91,9 @@ class nzrp_carcatalogue extends CModule
 				if($request->get("droptables")) {
 					$this->UnInstallDB();
 				}
+				// убираем следы при удалении
+				COption::RemoveOption($this->MODULE_ID, "GROUP_DEFAULT_RIGHT");
+				
 			} catch(Exception $ex) {
 				$APPLICATION->ThrowException("Во время удаления произошла ошибка: ".$ex->getMessage());
 			}
@@ -223,14 +230,5 @@ class nzrp_carcatalogue extends CModule
 			$opt->save();
 		}
 		
-		
-		
-		
-		//		\Nzrp\CarCatalogue\OptionTable::getMap()
-//
-//		$newBook = BrandTable::createObject();
-//		$newBook->setName('Brand1');
-//		$newBook->save();
-	
 	}
 }

@@ -3,6 +3,11 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 use Bitrix\Main\Context;
 use Bitrix\Main\Loader;
 
+if (CMain::GetGroupRight("nzrp.carcatalogue")<"W") {
+	CHTTP::setStatus("403");
+	return;
+}
+
 $arParams["SEF_FOLDER"] = "/api/";
 
 $arVariables = [];
@@ -56,8 +61,5 @@ CComponentEngine::InitComponentVariables(
 $arResult['VARIABLES'] = $arVariables;
 $arResult['FOLDER'] = $arParams['SEF_FOLDER'];
 $arResult['PAGE'] = $componentPage;
-
-//echo "<pre>".var_export($arResult,true)."</pre><br>";
-
 
 $this->IncludeComponentTemplate($componentPage);

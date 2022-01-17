@@ -1,10 +1,6 @@
 <?php
 if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true)die();
 
-use Bitrix\Main\Web\Json;
-use Bitrix\Main\Localization\Loc;
-use Bitrix\B24Connector\Connection;
-
 /** @global $APPLICATION */
 use Bitrix\Main\Grid\Options as GridOptions;
 use Bitrix\Main\UI\PageNavigation;
@@ -21,8 +17,6 @@ $grid_options = new GridOptions($listId);
 $grid_options->deleteView('default');
 $sort = $grid_options->GetSorting(['sort' => ['ID' => 'ASC'], 'vars' => ['by' => 'by', 'order' => 'order']]);
 
-
-//echo "<pre>".var_export($sort,true)."</pre><br>";
 
 $nav_params = $grid_options->GetNavParams();
 
@@ -46,9 +40,6 @@ $columns = [
 
 
 $APPLICATION->AddChainItem("Каталог автомобилей", $folder."/");
-//
-//echo "<pre>".var_export($arParams,true)."</pre><br>";
-
 
 if ($complectId) {
 	$r=ComplectTable::getRow([

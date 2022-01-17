@@ -4,15 +4,16 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 use Bitrix\Iblock\Component\Tools;
 /** @var array $arParams */
 
+if (CMain::GetGroupRight("nzrp.carcatalogue")<"W") {
+	ShowError("Нет доступа");
+	return;
+}
+
+
 $arVariables = [];
 $arVariableAliases=[];
 
-$arComponentVariables = array(
-//	'brand',
-//	'model',
-//	'comp'
-);
-
+$arComponentVariables = [];
 $arDefaultUrlTemplates404 = array(
 	'brands' => 'index.php',
 	'models' => '#BRAND#/',
@@ -51,20 +52,6 @@ if (empty($componentPage)) {
 	return;
 }
 
-/*
- * Добавим в $arVariables переменные из $_REQUEST, которые есть в $arComponentVariables и в $arVariableAliases.
- * Переменные из $arComponentVariables просто добавляются в $arVariables, если они есть в $_REQUEST. Переменные
- * $arVariableAliases добавляютcя под своими реальными именами, если в $_REQUEST есть соответствующий псевдоним.
- * В итоге, для страницы
- * server.com/demo/category/id/28/?show=3&sort=date&dir=desc
- * получим такой массив
- * $arVariables = Array (
- *    [SECTION_ID] => 28
- *    [ELEMENT_COUNT] => 3
- *    [sort] => date
- *    [dir] => desc
- * )
- */
 CComponentEngine::InitComponentVariables(
 	$componentPage,
 	$arComponentVariables,
@@ -75,8 +62,6 @@ CComponentEngine::InitComponentVariables(
 $arResult['VARIABLES'] = $arVariables;
 $arResult['FOLDER'] = $arParams['SEF_FOLDER'];
 $arResult['PAGE'] = $componentPage;
-
-//echo "<pre>".var_export($arResult,true)."</pre><br>";
 
 if ($componentPage!=='car_detail') {
 	$componentPage='list';
