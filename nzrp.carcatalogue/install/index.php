@@ -137,21 +137,22 @@ class nzrp_carcatalogue extends CModule
 	}
 	
 	public function InstallFiles() {
-		CopyDirFiles(
+		if (!CopyDirFiles(
 			__DIR__."/components",
 			$_SERVER["DOCUMENT_ROOT"]."/bitrix/components",
 			true,
 			true
-		);
-		
-		if (!CheckDirPath($_SERVER["DOCUMENT_ROOT"]."/api")) {
-			throw new Exception("Директория /api недоступна");
+		)) {
+			throw new Exception("Компоненты не скопировались");
 		}
-		if (!RewriteFile(
-			$_SERVER["DOCUMENT_ROOT"]."/api/index.php",
-			file_get_contents(__DIR__."/components/nzrp/carcatalogue.api/index.php"))
-		) {
-			throw new Exception("Файл /api/index.php недоступен");
+		
+		if (!CopyDirFiles(
+			__DIR__."/components/nzrp/carcatalogue.api/api",
+			$_SERVER["DOCUMENT_ROOT"]."/api",
+			true,
+			true
+		)) {
+			throw new Exception("Не удалось создать /api");
 		}
 	}
 	
