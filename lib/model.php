@@ -1,12 +1,14 @@
 <?php
 
-namespace Nzrp\CarCatalogue\Model;
+namespace Nzrp\CarCatalogue;
 use Bitrix\Main\ORM\Fields\Relations\OneToMany;
 use Bitrix\Main\ORM\Fields\Relations\Reference;
 use Bitrix\Main\ORM\Query\Join;
 use Bitrix\Main\ORM\Data\DataManager;
 use Bitrix\Main\ORM\Fields\IntegerField;
 use Bitrix\Main\ORM\Fields\StringField;
+use Nzrp\CarCatalogue\BrandTable;
+use Nzrp\CarCatalogue\ComplectTable;
 
 /**
  *

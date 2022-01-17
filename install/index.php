@@ -3,11 +3,11 @@
 use Bitrix\Main\Application;
 use Bitrix\Main\Context;
 use Bitrix\Main\ModuleManager;
-use Nzrp\CarCatalogue\Model\BrandTable;
-use Nzrp\CarCatalogue\Model\CarTable;
-use Nzrp\CarCatalogue\Model\ComplectTable;
-use Nzrp\CarCatalogue\Model\ModelTable;
-use Nzrp\CarCatalogue\Model\OptionTable;
+use Nzrp\CarCatalogue\BrandTable;
+use Nzrp\CarCatalogue\CarTable;
+use Nzrp\CarCatalogue\ComplectTable;
+use Nzrp\CarCatalogue\ModelTable;
+use Nzrp\CarCatalogue\OptionTable;
 
 class nzrp_carcatalogue extends CModule
 {

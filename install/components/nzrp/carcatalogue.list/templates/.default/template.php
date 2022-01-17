@@ -8,10 +8,10 @@ use Bitrix\B24Connector\Connection;
 /** @global $APPLICATION */
 use Bitrix\Main\Grid\Options as GridOptions;
 use Bitrix\Main\UI\PageNavigation;
-use Nzrp\CarCatalogue\Model\ComplectTable;
-use Nzrp\CarCatalogue\Model\CarTable;
-use Nzrp\CarCatalogue\Model\BrandTable;
-use Nzrp\CarCatalogue\Model\ModelTable;
+use Nzrp\CarCatalogue\ComplectTable;
+use Nzrp\CarCatalogue\CarTable;
+use Nzrp\CarCatalogue\BrandTable;
+use Nzrp\CarCatalogue\ModelTable;
 
 /** @var $arParams */
 

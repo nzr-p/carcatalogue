@@ -1,6 +1,6 @@
 <?php
 
-namespace Nzrp\CarCatalogue\Model;
+namespace Nzrp\CarCatalogue;
 use Bitrix\Main\ORM\Fields\FloatField;
 use Bitrix\Main\ORM\Fields\Relations\ManyToMany;
 use Bitrix\Main\ORM\Fields\Relations\Reference;
@@ -27,12 +27,12 @@ class CarTable extends DataManager {
 
 			// car 1:N complect
 			new IntegerField('COMPLECT_ID'),
-			(new Reference('COMPLECT', ComplectTable::class,
+			(new Reference('COMPLECT', \Nzrp\CarCatalogue\ComplectTable::class,
 				Join::on('this.COMPLECT_ID', 'ref.ID')
 			))->configureJoinType('inner'),
 			
 			// car N:M option
-			(new ManyToMany('OPTIONS', OptionTable::class))
+			(new ManyToMany('OPTIONS', \Nzrp\CarCatalogue\OptionTable::class))
 				->configureTableName("b_nzrp_carcatalogue_options_cars"),
 		];
 	}

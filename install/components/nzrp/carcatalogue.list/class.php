@@ -5,7 +5,7 @@ if(!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true)
 use Bitrix\Main\Type\DateTime;
 use Bitrix\Main\Type\Date;
 use Bitrix\Main\Loader;
-use Nzrp\CarCatalogue\Model\CarTable;
+use Nzrp\CarCatalogue\CarTable;
 
 class NzrpCarCatalogueList extends CBitrixComponent
 {

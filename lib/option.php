@@ -1,10 +1,12 @@
 <?php
 
-namespace Nzrp\CarCatalogue\Model;
+namespace Nzrp\CarCatalogue;
 use Bitrix\Main\ORM\Fields\Relations\ManyToMany;
 use Bitrix\Main\ORM\Data\DataManager;
 use Bitrix\Main\ORM\Fields\IntegerField;
 use Bitrix\Main\ORM\Fields\StringField;
+use Nzrp\CarCatalogue\CarTable;
+use Nzrp\CarCatalogue\ComplectTable;
 
 /**
  */

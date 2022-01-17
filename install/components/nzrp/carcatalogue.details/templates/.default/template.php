@@ -4,7 +4,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true)die();
 use Bitrix\Main\Web\Json;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\B24Connector\Connection;
-use Nzrp\CarCatalogue\Model\CarTable;
+use Nzrp\CarCatalogue\CarTable;
 
 /** @var CBitrixComponentTemplate $this */
 /** @var array $arParams */
