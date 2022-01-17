@@ -2,6 +2,8 @@
 /** @global CMain $APPLICATION */
 if (!check_bitrix_sessid())
 	return;
+use Bitrix\Main\UI\Extension;
+Extension::load('ui.bootstrap4');
 
 if ($ex = $APPLICATION->GetException())
 	echo CAdminMessage::ShowMessage(array(

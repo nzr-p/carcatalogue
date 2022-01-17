@@ -5,11 +5,14 @@ use Bitrix\Main\Web\Json;
 use Bitrix\Main\Localization\Loc;
 use Bitrix\B24Connector\Connection;
 use Nzrp\CarCatalogue\CarTable;
+use Bitrix\Main\UI\Extension;
 
 /** @var CBitrixComponentTemplate $this */
 /** @var array $arParams */
 /** @var array $arResult */
 /** @global $APPLICATION */
+
+Extension::load('ui.bootstrap4');
 
 $car=CarTable::getById($arParams['CAR_ID'])->fetchObject();
 $carOptions=[];
@@ -51,6 +54,9 @@ $rows=[
 	["Опции комплектации",implode(", ",$complectOptions)],
 ];
 
+// если что я сделал на бутстрапе, но я реально не верстальщик
 foreach($rows as $key=>$r) {
-	echo "<p>$r[0]: $r[1]</p>";
+	echo "<dl class='row'>
+	<dt class='col-sm-2'>$r[0]</dt><dl class='col-sm-9'>$r[1]</dl>
+	</dl>";
 }

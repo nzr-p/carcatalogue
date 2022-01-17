@@ -17,7 +17,7 @@ class nzrp_carcatalogue extends CModule
 	public $MODULE_NAME = "Каталог автомобилей";
 	public $MODULE_DESCRIPTION = "модуль по заданию";
 	public $MODULE_CSS;
-	
+	public $MODULE_GROUP_RIGHTS = "Y";
 	function __construct()
 	{
 		$arModuleVersion = array();
@@ -31,6 +31,15 @@ class nzrp_carcatalogue extends CModule
 		
 	}
 	
+	function GetModuleRightList():array
+	{
+		return [
+			"reference_id" => ["W","D"],
+			"reference" => [
+				"[W] Доступ разрешён",
+				"[D] Доступ запрещён",
+			]];
+	}
 	
 	public function doInstall()
 	{

@@ -2,6 +2,8 @@
 /** @global CMain $APPLICATION */
 if (!check_bitrix_sessid())
 	return;
+use Bitrix\Main\UI\Extension;
+Extension::load('ui.bootstrap4');
 ?>
 <form action="<?php echo $APPLICATION->GetCurPage()?>" name="form1">
 		<?=bitrix_sessid_post()?>
