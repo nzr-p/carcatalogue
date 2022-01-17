@@ -1,6 +1,6 @@
 <?php
 
-namespace Nzrp\CarCatalogue;
+namespace Nzrp\CarCatalogue\Model;
 use Bitrix\Main\ORM\Fields\FloatField;
 use Bitrix\Main\ORM\Fields\Relations\ManyToMany;
 use Bitrix\Main\ORM\Fields\Relations\Reference;
@@ -12,11 +12,7 @@ use Bitrix\Main\ORM\Fields\StringField;
 /**
  */
 class CarTable extends DataManager {
-	// само пусть формируется
-//	public static function getTableName(): string {
-//		return 'brand';
-//	}
-	
+
 	public static function getMap(): array {
 		return [
 			new IntegerField('ID',
@@ -31,7 +27,7 @@ class CarTable extends DataManager {
 
 			// car 1:N complect
 			new IntegerField('COMPLECT_ID'),
-			(new Reference('COMPLECT',ComplectTable::class,
+			(new Reference('COMPLECT', ComplectTable::class,
 				Join::on('this.COMPLECT_ID', 'ref.ID')
 			))->configureJoinType('inner'),
 			

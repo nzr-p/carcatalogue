@@ -3,11 +3,11 @@
 use Bitrix\Main\Application;
 use Bitrix\Main\Context;
 use Bitrix\Main\ModuleManager;
-use Nzrp\CarCatalogue\BrandTable;
-use Nzrp\CarCatalogue\CarTable;
-use Nzrp\CarCatalogue\ComplectTable;
-use Nzrp\CarCatalogue\ModelTable;
-use Nzrp\CarCatalogue\OptionTable;
+use Nzrp\CarCatalogue\Model\BrandTable;
+use Nzrp\CarCatalogue\Model\CarTable;
+use Nzrp\CarCatalogue\Model\ComplectTable;
+use Nzrp\CarCatalogue\Model\ModelTable;
+use Nzrp\CarCatalogue\Model\OptionTable;
 
 class nzrp_carcatalogue extends CModule
 {
@@ -52,21 +52,12 @@ class nzrp_carcatalogue extends CModule
 					$this->UnInstallDB();
 				}
 				$this->InstallDB();
+				$this->InstallFiles();
 			} catch(Exception $ex) {
 				// не уверен, что надо снимать регистрацию модуля в случае ошибки
 				$APPLICATION->ThrowException("Во время установки произошла ошибка: ".$ex->getMessage());
 			}
 
-			
-			
-			//		CopyDirFiles(
-//			$this->dir."/install/components",
-//			$_SERVER["DOCUMENT_ROOT"]."/bitrix/components",
-//			true,
-//			true
-//		);
-
-//		ModuleManager::registerModule($this->MODULE_ID);
 			$APPLICATION->IncludeAdminFile("Установка модуля \"$this->MODULE_NAME\"", __DIR__."/step2.php");
 		}
 	}
@@ -94,15 +85,7 @@ class nzrp_carcatalogue extends CModule
 			$APPLICATION->IncludeAdminFile("Удаление модуля \"$this->MODULE_NAME\"", __DIR__."/unstep2.php");
 		}
 
-
-
-
-//		DeleteDirFilesEx("/local/components/".$this->MODULE_ID);
-		
 		ModuleManager::unRegisterModule($this->MODULE_ID);
-//		echo CAdminMessage::ShowMessage(array("MESSAGE"=>"Модуль $this->MODULE_ID удалён", "TYPE"=>"OK"));
-//		echo "asdfasdfdsf";
-		
 	}
 	
 	public function InstallDB() {
@@ -130,43 +113,46 @@ class nzrp_carcatalogue extends CModule
 	public function UnInstallDB() {
 		$con = Application::getConnection();
 		
-		foreach($this->getTables(true) as $table) {
+		foreach($this->getTables() as $table) {
 			if ($con->isTableExists($table->getDBTableName())) {
 				$con->dropTable($table->getDBTableName());
 			}
 		}
 	}
-	/**
-	 * @param bool $withExtra ещё 2 таблицы это связи M:N, их создавать не надо, но удалить вроде надо
-	 *
-	 * @return \Bitrix\Main\ORM\Entity[]
-	 */
-	private function getTables(bool $withExtra=false):array {
+	
+	public function InstallFiles() {
+		CopyDirFiles(
+			__DIR__."/components",
+			$_SERVER["DOCUMENT_ROOT"]."/bitrix/components",
+			true,
+			true
+		);
+		
+		if (!CheckDirPath($_SERVER["DOCUMENT_ROOT"]."/api")) {
+			throw new Exception("Директория /api недоступна");
+		}
+		if (!RewriteFile(
+			$_SERVER["DOCUMENT_ROOT"]."/api/index.php",
+			file_get_contents(__DIR__."/components/nzrp/carcatalogue.api/index.php"))
+		) {
+			throw new Exception("Файл /api/index.php недоступен");
+		}
+	}
+	
+	
+	private function getTables():array {
 		$oe=OptionTable::getEntity();
-
-		$tables=[
+		
+		return [
 			BrandTable::getEntity(),
 			ModelTable::getEntity(),
 			ComplectTable::getEntity(),
 			CarTable::getEntity(),
 			$oe,
+			// так получаем объекты таблиц множественных связей
 			$oe->getField("CARS")->getMediatorEntity(),
 			$oe->getField("COMPLECTS")->getMediatorEntity()
 		];
-//		if ($withExtra) {
-			
-			//
-//			try {
-				// их может не быть
-//				$tables[]=;
-//				$tables[]=;
-//			}
-//			catch(Exception $ex) {
-//
-//			}
-//		}
-		
-		return $tables;
 	}
 	private function createData() {
 		$data=include __DIR__."/data.inc";

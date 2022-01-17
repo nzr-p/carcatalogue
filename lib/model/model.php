@@ -1,7 +1,6 @@
 <?php
 
-namespace Nzrp\CarCatalogue;
-use Bitrix\Main\Entity;
+namespace Nzrp\CarCatalogue\Model;
 use Bitrix\Main\ORM\Fields\Relations\OneToMany;
 use Bitrix\Main\ORM\Fields\Relations\Reference;
 use Bitrix\Main\ORM\Query\Join;
@@ -13,11 +12,7 @@ use Bitrix\Main\ORM\Fields\StringField;
  *
  */
 class ModelTable extends DataManager {
-	// само пусть формируется
-//	public static function getTableName(): string {
-//		return 'brand';
-//	}
-	
+
 	public static function getMap(): array {
 		return [
 			new IntegerField('ID',

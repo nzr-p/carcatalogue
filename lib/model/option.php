@@ -1,10 +1,7 @@
 <?php
 
-namespace Nzrp\CarCatalogue;
-use Bitrix\Main\ORM\Fields\FloatField;
+namespace Nzrp\CarCatalogue\Model;
 use Bitrix\Main\ORM\Fields\Relations\ManyToMany;
-use Bitrix\Main\ORM\Fields\Relations\Reference;
-use Bitrix\Main\ORM\Query\Join;
 use Bitrix\Main\ORM\Data\DataManager;
 use Bitrix\Main\ORM\Fields\IntegerField;
 use Bitrix\Main\ORM\Fields\StringField;
@@ -12,11 +9,7 @@ use Bitrix\Main\ORM\Fields\StringField;
 /**
  */
 class OptionTable extends DataManager {
-	// само пусть формируется
-//	public static function getTableName(): string {
-//		return 'brand';
-//	}
-	
+
 	public static function getMap(): array {
 		return [
 			new IntegerField('ID',
